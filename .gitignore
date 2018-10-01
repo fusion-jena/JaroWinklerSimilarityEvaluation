@@ -1,0 +1,7 @@
+/.settings
+/target
+/.classpath
+/.project
+/results/de/uni_jena/cs/fusion/similarity/jarowinkler/*.class
+/.RData
+/.Rhistory

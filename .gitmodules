@@ -1,0 +1,6 @@
+[submodule "DreslerEtAl"]
+	path = DreslerEtAl
+	url = https://github.com/fusion-jena/QuickJaroWinkler
+[submodule "ApacheCommonsText"]
+	path = ApacheCommonsText
+	url = git@github.com:apache/commons-text.git

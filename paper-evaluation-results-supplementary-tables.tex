@@ -1,0 +1,68 @@
+% !TeX encoding = UTF-8
+% !TeX spellcheck = en_US
+\documentclass[10pt,a4paper]{article}
+\usepackage[landscape]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage{wasysym,amssymb,textcomp}
+\usepackage{multirow}
+\begin{document}
+\begin{table}
+    \caption{
+        Comparison results of measurements with full, half, and zero overlap of terms and queries.
+        \LEFTarrow~row implementation significantly outperformed column implementation;
+        (\LEFTarrow)~row implementation insignificantly outperformed column implementation;
+        \(\vartriangle\)~column implementation significantly outperformed row implementation;
+        \((\vartriangle)\)~column implementation insignificantly outperformed row implementation;
+        ?~missing or too imprecise values due to long running measurements;
+        \(\approx\)~no difference measured, due to low precision
+    }
+    \tiny
+    \setlength\tabcolsep{0.2pt}
+    \include{paper-evaluation-results-table-all}
+\end{table}
+\begin{table}
+    \caption{
+        Comparison results of measurements with full overlap of terms and queries.
+        \LEFTarrow~row implementation significantly outperformed column implementation;
+        (\LEFTarrow)~row implementation insignificantly outperformed column implementation;
+        \(\vartriangle\)~column implementation significantly outperformed row implementation;
+        \((\vartriangle)\)~column implementation insignificantly outperformed row implementation;
+        ?~missing or too imprecise values due to long running measurements;
+        \(\approx\)~no difference measured, due to low precision
+    }
+    \tiny
+    \setlength\tabcolsep{0.2pt}
+    \include{paper-evaluation-results-table-full}
+\end{table}
+\begin{table}
+    \caption{
+        Comparison results of measurements with half overlap of terms and queries.
+        \LEFTarrow~row implementation significantly outperformed column implementation;
+        (\LEFTarrow)~row implementation insignificantly outperformed column implementation;
+        \(\vartriangle\)~column implementation significantly outperformed row implementation;
+        \((\vartriangle)\)~column implementation insignificantly outperformed row implementation;
+        ?~missing or too imprecise values due to long running measurements;
+        \(\approx\)~no difference measured, due to low precision
+    }
+    \tiny
+    \setlength\tabcolsep{0.2pt}
+    \include{paper-evaluation-results-table-half}
+\end{table}
+\begin{table}
+    \caption{
+        Comparison results of measurements with zero overlap of terms and queries.
+        \LEFTarrow~row implementation significantly outperformed column implementation;
+        (\LEFTarrow)~row implementation insignificantly outperformed column implementation;
+        \(\vartriangle\)~column implementation significantly outperformed row implementation;
+        \((\vartriangle)\)~column implementation insignificantly outperformed row implementation;
+        ?~missing or too imprecise values due to long running measurements;
+        \(\approx\)~no difference measured, due to low precision
+    }
+    \tiny
+    \setlength\tabcolsep{0.2pt}
+    \include{paper-evaluation-results-table-none}
+\end{table}
+\end{document}
