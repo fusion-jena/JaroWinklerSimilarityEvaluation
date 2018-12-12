@@ -94,7 +94,19 @@ for(querySize in querySizes) {
 }
 close(progressBar)
 row.names(executionDifferences) <- NULL
-table(executionDifferences$Matcher)
+
+table(factor(executionDifferences$TermSize))
+table(factor(executionDifferences$QuerySize))
+table(factor(executionDifferences$Threshold))
+table(factor(executionDifferences$Prepared))
+table(factor(executionDifferences$Coverage))
+table(factor(executionDifferences$Matcher))
+
+table(factor(executionDifferences$Matcher),factor(executionDifferences$TermSize))
+table(factor(executionDifferences$Matcher),factor(executionDifferences$QuerySize))
+table(factor(executionDifferences$Matcher),factor(executionDifferences$Threshold))
+table(factor(executionDifferences$Matcher),factor(executionDifferences$Prepared))
+table(factor(executionDifferences$Matcher),factor(executionDifferences$Coverage))
 
 message("remove iterations with missing executions")
 data <- ddply(data,.(p1_querySize,p2_termSize,p3_threshold,p4_prepared,p5_coverage,p6_matcher,iteration),transform,count = length(measure),.progress = "text")
@@ -493,21 +505,22 @@ matrix2LaTex("paper-evaluation-results-table-full.tex",result_FULL)
 matrix2LaTex("paper-evaluation-results-table-half.tex",result_HALF)
 matrix2LaTex("paper-evaluation-results-table-none.tex",result_NONE)
 
-comparisonPlot <- function(data) {
-  par(mar=c(4,4,0.1,1))
+
+throughputPlot <- function(data) {
+  par(mar=c(4,4,0.45,1))
   
   # aggregate data
   data <- aggregate(measure ~ p1_querySize + p6_matcher, data, mean)
   
   # get the range for the x and y axis
   xrange <- range(querySizes)
-  yrange <- range(data$measure)
+  yrange <- c(10^-3,10^5)
   
-  suppressWarnings(plot(NULL,xlim=xrange, ylim=yrange, type="b", xlab="Number of Queries", ylab="Throughput (ops/s)", log="xy", axes=FALSE, frame.plot=TRUE))
+  suppressWarnings(plot(NULL,xlim=xrange, ylim=yrange, type="b", xlab="Number of Queries", ylab="Mean Throughput of all Queries (ops/s)", log="xy", axes=FALSE, frame.plot=TRUE))
   axis(1,at=querySizes,labels=as.character(querySizes))
-  axis(2,at=10^(-3:5),labels=c(0.001,0.01,0.1,1,10,100,1000,10000,100000))
+  axis(2,at=10^(-3:5),labels=c(0.001,0.01,0.1,1,10,100,1000,"10000","100000"))
   matchersFormated <- sapply(matchers, formatedMatcher, simplify = "array", USE.NAMES = FALSE)
-  legend(xrange[2], yrange[2], matchersFormated, cex=0.8, lty=1:length(matchers), pch=(1:length(matchers))+1, bty="n",xjust=1)
+  legend("topright", matchersFormated, cex=0.8, lty=1:length(matchers), pch=(1:length(matchers))+1, bty="n",xjust=1)
   
   # add lines
   for (i in 1:length(matchers)) {
@@ -516,26 +529,63 @@ comparisonPlot <- function(data) {
   }
 }
 
-pdf("plot_ts6_th91_p0.pdf", width=5, height=4)
-comparisonPlot(subset(data, p2_termSize == 1000000 & p3_threshold == 0.91 & p4_prepared == FALSE))
+timePlot <- function(data) {
+  par(mar=c(4,4,0.45,1))
+  
+  # aggregate data
+  data <- aggregate(measure ~ p1_querySize + p6_matcher, data, mean)
+  
+  # get the range for the x and y axis
+  xrange <- range(querySizes)
+  yrange <- c(10^-2,2000)
+  #yrange <- range(1000/data$measure/data$p1_querySize)
+  
+  suppressWarnings(plot(NULL,xlim=xrange, ylim=yrange, type="b", xlab="Number of Queries", ylab="Mean Time per Query (ms)", log="xy", axes=FALSE, frame.plot=TRUE))
+  axis(1,at=querySizes,labels=as.character(querySizes))
+  axis(2,at=10^(-2:3),labels=c(0.01,0.1,1,10,100,1000))
+  matchersFormated <- sapply(matchers, formatedMatcher, simplify = "array", USE.NAMES = FALSE)
+  legend("bottomright", matchersFormated, cex=0.8, lty=1:length(matchers), pch=(1:length(matchers))+1, bty="n",xjust=1)
+  
+  # add lines
+  for (i in 1:length(matchers)) {
+    matcherData <- subset(data, p6_matcher==matchers[i])
+    lines(1000/matcherData$measure/matcherData$p1_querySize ~ matcherData$p1_querySize, type="b", lty=i, pch=i+1)
+  }
+}
+
+pdf("plot_ts6_th91_p0.pdf", width=3, height=3.65)
+throughputPlot(subset(data, p2_termSize == 1000000 & p3_threshold == 0.91 & p4_prepared == FALSE))
 dev.off()
 
-pdf("plot_ts6_th95_p0.pdf", width=5, height=4)
-comparisonPlot(subset(data, p2_termSize == 1000000 & p3_threshold == 0.95 & p4_prepared == FALSE))
+pdf("plot_ts6_th95_p0.pdf", width=3, height=3.65)
+throughputPlot(subset(data, p2_termSize == 1000000 & p3_threshold == 0.95 & p4_prepared == FALSE))
 dev.off()
 
-pdf("plot_ts6_th99_p0.pdf", width=5, height=4)
-comparisonPlot(subset(data, p2_termSize == 1000000 & p3_threshold == 0.99 & p4_prepared == FALSE))
+pdf("plot_ts6_th99_p0.pdf", width=3, height=3.65)
+throughputPlot(subset(data, p2_termSize == 1000000 & p3_threshold == 0.99 & p4_prepared == FALSE))
 dev.off()
 
-pdf("plot_ts6_th91_p1.pdf", width=5, height=4)
-comparisonPlot(subset(data, p2_termSize == 1000000 & p3_threshold == 0.91 & p4_prepared == TRUE))
+pdf("plot_ts6_th91_p1.pdf", width=3, height=3.65)
+throughputPlot(subset(data, p2_termSize == 1000000 & p3_threshold == 0.91 & p4_prepared == TRUE))
 dev.off()
 
-pdf("plot_ts6_th95_p1.pdf", width=5, height=4)
-comparisonPlot(subset(data, p2_termSize == 1000000 & p3_threshold == 0.95 & p4_prepared == TRUE))
+pdf("plot_ts6_th95_p1.pdf", width=3, height=3.65)
+throughputPlot(subset(data, p2_termSize == 1000000 & p3_threshold == 0.95 & p4_prepared == TRUE))
 dev.off()
 
-pdf("plot_ts6_th99_p1.pdf", width=5, height=4)
-comparisonPlot(subset(data, p2_termSize == 1000000 & p3_threshold == 0.99 & p4_prepared == TRUE))
+pdf("plot_ts6_th99_p1.pdf", width=3, height=3.65)
+throughputPlot(subset(data, p2_termSize == 1000000 & p3_threshold == 0.99 & p4_prepared == TRUE))
 dev.off()
+
+pdf("plot_ts6_th91_p1_time.pdf", width=3, height=3.65)
+timePlot(subset(data, p2_termSize == 1000000 & p3_threshold == 0.91 & p4_prepared == TRUE))
+dev.off()
+
+pdf("plot_ts6_th95_p1_time.pdf", width=3, height=3.65)
+timePlot(subset(data, p2_termSize == 1000000 & p3_threshold == 0.95 & p4_prepared == TRUE))
+dev.off()
+
+pdf("plot_ts6_th99_p1_time.pdf", width=3, height=3.65)
+timePlot(subset(data, p2_termSize == 1000000 & p3_threshold == 0.99 & p4_prepared == TRUE))
+dev.off()
+
