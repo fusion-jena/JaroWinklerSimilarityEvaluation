@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/149863193.svg)](https://zenodo.org/badge/latestdoi/149863193)
+
 # Efficient Bounded Jaro-Winkler Similarity Based Search - Supplementary Materials
 
 ## Content
